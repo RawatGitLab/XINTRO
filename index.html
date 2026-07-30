@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Intro Section With Dropdown Navigation</title>
+<style>
+  :root {
+    --almost-white: #fafafa;
+    --medium-gray: #6f6f6f;
+    --near-black: #002211;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'Epilogue', Arial, sans-serif;
+    color: var(--near-black);
+  }
+
+  a { text-decoration: none; color: inherit; }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  /* ---------- HEADER ---------- */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 5%;
+    position: relative;
+    z-index: 10;
+  }
+
+  header .logo {
+    height: 24px;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+  }
+
+  nav.desktop-nav {
+    display: flex;
+  }
+
+  nav.desktop-nav .nav-list {
+    list-style: none;
+    display: flex;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-item {
+    position: relative;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: var(--medium-gray);
+  }
+
+  .nav-link img { transition: transform 0.2s ease; }
+
+  .nav-link.link-open {
+    color: var(--near-black);
+    font-weight: 700;
+  }
+
+  .nav-link.link-open img {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-list {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: -20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    padding: 16px 24px;
+    list-style: none;
+    min-width: 180px;
+    z-index: 20;
+  }
+
+  .dropdown-list.dropdown-open {
+    display: block;
+  }
+
+  .dropdown-list li { margin: 12px 0; }
+
+  .dropdown-link a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--medium-gray);
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .dropdown-link a:hover { color: var(--near-black); font-weight: 700; }
+
+  .registration {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .registration button {
+    border: none;
+    background: none;
+    font-size: 14px;
+    color: var(--medium-gray);
+  }
+
+  .registration button.register-btn {
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 10px 28px;
+    color: var(--near-black);
+  }
+
+  .open-menu, .close-menu {
+    display: none;
+    border: none;
+    background: none;
+    padding: 0;
+  }
+
+  /* ---------- OVERLAY / MOBILE MENU ---------- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 100px;
+  }
+
+  .overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .mobile-menu-panel {
+    background: #fff;
+    width: 85%;
+    max-width: 350px;
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .mobile-menu-panel .close-menu {
+    display: block;
+    margin-left: auto;
+    margin-bottom: 16px;
+  }
+
+  .mobile-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-nav-list .nav-item {
+    border-bottom: 1px solid #eee;
+  }
+
+  .mobile-nav-list .nav-link {
+    width: 100%;
+    justify-content: space-between;
+    padding: 16px 0;
+    color: var(--near-black);
+  }
+
+  .mobile-nav-list .dropdown-list {
+    position: static;
+    box-shadow: none;
+    padding: 0 0 16px 0;
+  }
+
+  .mobile-registration {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .mobile-registration button {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .mobile-registration .register-btn {
+    border: 1px solid #ddd;
+    border-radius: 20px;
+  }
+
+  /* ---------- MAIN ---------- */
+  main {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 0 5% 80px;
+    text-align: center;
+  }
+
+  main picture {
+    width: 100%;
+    display: block;
+  }
+
+  main picture img {
+    width: 100%;
+    display: block;
+  }
+
+  .text-content {
+    max-width: 500px;
+    margin-top: 40px;
+  }
+
+  .text-content h1 {
+    font-size: 40px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .text-content p {
+    color: var(--medium-gray);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  .text-content .learn-more-btn {
+    background: #ff6a3a;
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 14px 32px;
+    font-size: 14px;
+  }
+
+  .clients {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+    max-width: 500px;
+    margin: 48px auto 0;
+    flex-wrap: wrap;
+  }
+
+  .clients img { height: 24px; }
+
+  /* ---------- FOOTER ---------- */
+  footer.attribution {
+    text-align: center;
+    font-size: 11px;
+    padding: 24px;
+    color: var(--medium-gray);
+  }
+
+  .attribution a { color: #ff6a3a; }
+
+  @media (min-width: 768px) {
+    main {
+      flex-direction: row;
+      text-align: left;
+      padding: 40px 5% 100px;
+    }
+
+    .text-content {
+      margin-top: 0;
+      margin-right: 40px;
+    }
+
+    .clients {
+      justify-content: flex-start;
+      margin: 64px 0 0;
+    }
+  }
+
+  @media (max-width: 767px) {
+    nav.desktop-nav,
+    header .registration {
+      display: none;
+    }
+
+    .open-menu {
+      display: block;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <img class="logo" src="./assets/images/logo.svg" alt="snap's logo" />
+    <nav class="desktop-nav">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <button class="nav-link" type="button" data-dropdown="features-dropdown">
+            Features
+            <img src="./assets/images/icon-arrow-down.svg" alt="" />
+          </button>
+          <ul class="dropdown-list" id="features-dropdown">
+            <li class="dropdown-link"><a href="#" aria-label="todo-list"><img src="./assets/images/icon-todo.svg" alt="" /> Todo List</a></li>
+            <li class="dropdown-link"><a href="#" aria-label="calendar"><img src="./assets/images/icon-calendar.svg" alt="" /> Calendar</a></li>
+            <li class="dropdown-link"><a href="#" aria-label="reminders"><img src="./assets/images/icon-reminders.svg" alt="" /> Reminders</a></li>
+            <li class="dropdown-link"><a href="#" aria-label="planning"><img src="./assets/images/icon-planning.svg" alt="" /> Planning</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" type="button" data-dropdown="company-dropdown">
+            Company
+            <img src="./assets/images/icon-arrow-down.svg" alt="" />
+          </button>
+          <ul class="dropdown-list" id="company-dropdown">
+            <li class="dropdown-link"><a href="#" aria-label="history">History</a></li>
+            <li class="dropdown-link"><a href="#" aria-label="our-team">Our Team</a></li>
+            <li class="dropdown-link"><a href="#" aria-label="blog">Blog</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a href="#" class="plain-link">Careers</a></li>
+        <li class="nav-item"><a href="#" class="plain-link">About</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="registration">
+    <button type="button">Login</button>
+    <button type="button" class="register-btn">Register</button>
+  </div>
+
+  <button class="open-menu" type="button" aria-label="open menu">
+    <img src="./assets/images/icon-menu.svg" alt="open menu" />
+  </button>
+
+  <div class="overlay">
+    <div class="mobile-menu-panel">
+      <button class="close-menu" type="button" aria-label="close menu">
+        <img src="./assets/images/icon-close-menu.svg" alt="close menu" />
+      </button>
+      <ul class="mobile-nav-list">
+        <li class="nav-item">
+          <button class="nav-link" type="button" data-dropdown="features-dropdown-mobile">
+            Features
+            <img src="./assets/images/icon-arrow-down.svg" alt="" />
+          </button>
+          <ul class="dropdown-list" id="features-dropdown-mobile">
+            <li class="dropdown-link"><a href="#" aria-label="todo-list-mobile"><img src="./assets/images/icon-todo.svg" alt="" /> Todo List</a></li>
+            <li class="dropdown-link"><a href="#" aria-label="calendar-mobile"><img src="./assets/images/icon-calendar.svg" alt="" /> Calendar</a></li>
+            <li class="dropdown-link"><a href="#" aria-label="reminders-mobile"><img src="./assets/images/icon-reminders.svg" alt="" /> Reminders</a></li>
+            <li class="dropdown-link"><a href="#" aria-label="planning-mobile"><img src="./assets/images/icon-planning.svg" alt="" /> Planning</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" type="button" data-dropdown="company-dropdown-mobile">
+            Company
+            <img src="./assets/images/icon-arrow-down.svg" alt="" />
+          </button>
+          <ul class="dropdown-list" id="company-dropdown-mobile">
+            <li class="dropdown-link"><a href="#" aria-label="history-mobile">History</a></li>
+            <li class="dropdown-link"><a href="#" aria-label="our-team-mobile">Our Team</a></li>
+            <li class="dropdown-link"><a href="#" aria-label="blog-mobile">Blog</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a href="#" class="plain-link">Careers</a></li>
+        <li class="nav-item"><a href="#" class="plain-link">About</a></li>
+      </ul>
+      <div class="mobile-registration">
+        <button type="button">Login</button>
+        <button type="button" class="register-btn">Register</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="text-content">
+    <h1>Make remote work</h1>
+    <p>Get your team in sync, no matter your location. Streamline processes, create team rituals, and watch productivity soar.</p>
+    <button class="learn-more-btn" type="button">Learn more</button>
+
+    <div class="clients">
+      <img src="./assets/images/client-databiz.svg" alt="Databiz" />
+      <img src="./assets/images/client-audiophile.svg" alt="Audiophile" />
+      <img src="./assets/images/client-meet.svg" alt="Meet" />
+      <img src="./assets/images/client-maker.svg" alt="Maker" />
+    </div>
+  </div>
+
+  <picture>
+    <source media="(min-width: 768px)" srcset="./assets/images/image-hero-desktop.png" />
+    <img src="./assets/images/image-hero-mobile.png" alt="Hero image" />
+  </picture>
+</main>
+
+<footer class="attribution">
+  <p>
+    Challenge by
+    <a href="https://crio.do" target="_blank">Crio</a>.
+    Coded by <a href="#">You</a>.
+  </p>
+</footer>
+
+<script>
+  const openMenuBtn = document.querySelector('.open-menu');
+  const closeMenuBtn = document.querySelector('.close-menu');
+  const overlay = document.querySelector('.overlay');
+
+  openMenuBtn.addEventListener('click', () => {
+    overlay.classList.add('active');
+  });
+
+  closeMenuBtn.addEventListener('click', () => {
+    overlay.classList.remove('active');
+  });
+
+  document.querySelectorAll('.nav-link').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const dropdownId = btn.getAttribute('data-dropdown');
+      const dropdown = document.getElementById(dropdownId);
+      const isOpen = btn.classList.contains('link-open');
+
+      // Close all other dropdowns first
+      document.querySelectorAll('.nav-link').forEach((otherBtn) => {
+        if (otherBtn !== btn) {
+          otherBtn.classList.remove('link-open');
+          const otherId = otherBtn.getAttribute('data-dropdown');
+          const otherDropdown = document.getElementById(otherId);
+          if (otherDropdown) otherDropdown.classList.remove('dropdown-open');
+        }
+      });
+
+      if (isOpen) {
+        btn.classList.remove('link-open');
+        dropdown.classList.remove('dropdown-open');
+      } else {
+        btn.classList.add('link-open');
+        dropdown.classList.add('dropdown-open');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
